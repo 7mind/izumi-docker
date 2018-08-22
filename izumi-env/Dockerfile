@@ -23,13 +23,14 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E03280
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823 && \
     echo "deb https://dl.bintray.com/sbt/debian /" | tee /etc/apt/sources.list.d/sbt.list
 
-RUN apt-get update && \
-    apt-get install -y git openjdk-8-jdk sbt mono-devel nuget nunit-console npm golang-${V_GOLANG} && \
-    apt-get clean -y
-
 RUN wget -q www.scala-lang.org/files/archive/scala-${V_SCALA}.deb && dpkg -i scala-${V_SCALA}.deb && rm -rf *.deb && \
     npm i -g typescript@${V_TYPESCRIPT} && \
     wget -q -O /usr/local/bin/coursier https://git.io/vgvpD && chmod +x /usr/local/bin/coursier
+
+
+RUN apt-get update && \
+    apt-get install -y git openjdk-8-jdk sbt mono-devel nuget nunit-console npm golang-${V_GOLANG} && \
+    apt-get clean -y
 
 #  /usr/lib/go-1.10/bin needs to be added into PATH manually: https://github.com/golang/go/wiki/Ubuntu
 ENV PATH $PATH:/usr/lib/go-${V_GOLANG}/bin
