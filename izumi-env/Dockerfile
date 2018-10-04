@@ -43,4 +43,4 @@ RUN java -version && \
     csc -version && \
     tsc -version && \
     go version && \
-    (sbt -help || true)
+    sbt about

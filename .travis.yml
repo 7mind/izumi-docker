@@ -5,6 +5,7 @@ services:
 
 before_install:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
 
 jobs:
   include:
