@@ -6,7 +6,8 @@ services:
 before_install:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
-
+  - sudo service docker restart
+  
 jobs:
   include:
     - stage: "ubuntu 18.04"
