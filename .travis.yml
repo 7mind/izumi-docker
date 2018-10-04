@@ -6,12 +6,17 @@ services:
 before_install:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-script:
-  - docker build --tag septimalmind/izumi-env:latest --tag septimalmind/izumi-env:${TRAVIS_BRANCH} --tag septimalmind/izumi-env:${TRAVIS_COMMIT} izumi-env
-  - docker build --tag septimalmind/izumi-env-legacy:latest --tag septimalmind/izumi-env-legacy:${TRAVIS_BRANCH} --tag septimalmind/izumi-env-legacy:${TRAVIS_COMMIT} izumi-env-legacy
-  - docker push septimalmind/izumi-env:latest
-  - docker push septimalmind/izumi-env:${TRAVIS_BRANCH}
-  - docker push septimalmind/izumi-env:${TRAVIS_COMMIT}
-  - docker push septimalmind/izumi-env-legacy:latest
-  - docker push septimalmind/izumi-env-legacy:${TRAVIS_BRANCH}
-  - docker push septimalmind/izumi-env-legacy:${TRAVIS_COMMIT}
+jobs:
+  include:
+    - stage: "ubuntu 18.04"
+      script:
+      - docker build --squash --tag septimalmind/izumi-env:latest --tag septimalmind/izumi-env:${TRAVIS_BRANCH} --tag septimalmind/izumi-env:${TRAVIS_COMMIT} izumi-env
+      - docker push septimalmind/izumi-env:latest
+      - docker push septimalmind/izumi-env:${TRAVIS_BRANCH}
+      - docker push septimalmind/izumi-env:${TRAVIS_COMMIT}
+    - stage: "ubuntu 14.04"
+      script:
+      - docker build --squash --tag septimalmind/izumi-env-legacy:latest --tag septimalmind/izumi-env-legacy:${TRAVIS_BRANCH} --tag septimalmind/izumi-env-legacy:${TRAVIS_COMMIT} izumi-env-legacy
+      - docker push septimalmind/izumi-env-legacy:latest
+      - docker push septimalmind/izumi-env-legacy:${TRAVIS_BRANCH}
+      - docker push septimalmind/izumi-env-legacy:${TRAVIS_COMMIT}
