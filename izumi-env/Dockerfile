@@ -36,7 +36,8 @@ RUN apt-get update && \
     apt-get install -y ruby ruby-dev && \
     apt-get clean -y
 
-RUN rvm use 2.2.8 --install --fuzzy && \
+RUN gem install rvm && \
+  rvm use 2.2.8 --install --fuzzy && \
   gem update --system && \
   gem install sass && \
   gem install jekyll -v 3.2.1
