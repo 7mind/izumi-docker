@@ -33,10 +33,17 @@ RUN wget -q www.scala-lang.org/files/archive/scala-${V_SCALA}.deb && dpkg -i sca
 
 RUN apt-get update && \
     apt-get install -y sbt && \
+    apt-get install -y ruby ruby-dev && \
     apt-get clean -y
 
+RUN rvm use 2.2.8 --install --fuzzy && \
+  gem update --system && \
+  gem install sass && \
+  gem install jekyll -v 3.2.1
+
 #  /usr/lib/go-1.10/bin needs to be added into PATH manually: https://github.com/golang/go/wiki/Ubuntu
-ENV PATH $PATH:/usr/lib/go-${V_GOLANG}/bin
+ENV GOPATH $HOME/gopath
+ENV PATH $HOME/gopath/bin:/usr/lib/go-${V_GOLANG}/bin:$PATH
 
 RUN java -version && \
     scalac -version && \
