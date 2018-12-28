@@ -41,7 +41,7 @@ RUN wget -q www.scala-lang.org/files/archive/scala-${V_SCALA}.deb && dpkg -i sca
 
 RUN apt-get update && \
   apt-get install -y --no-install-recommends sbt && \
-  apt-get install -y --no-install-recommends ruby ruby-dev && \
+  apt-get install -y ruby ruby-dev && \
   apt-get clean -y
 
 RUN rvm use 2.2.8 --install --fuzzy && \
