@@ -17,7 +17,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN echo "APT::Acquire::Queue-Mode "access"; APT::Acquire::Retries 3; " > /etc/apt/apt.conf.d/99parallel && \
   export DEBIAN_FRONTEND=noninteractive && \
-  apt-get update && apt-get install -y --no-install-recommends tzdata gnupg ca-certificates wget curl unzip apt-utils build-essential git && \
+  apt-get update && apt-get install -y --no-install-recommends tzdata gnupg ca-certificates wget curl unzip apt-utils build-essential git openssh-client && \
   ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
   dpkg-reconfigure --frontend noninteractive tzdata && \
   apt-get clean -y
