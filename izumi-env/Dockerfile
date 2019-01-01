@@ -36,12 +36,14 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E03280
 RUN apt-get install -y --no-install-recommends openjdk-${V_OPENJDK}-jdk \
   mono-devel nuget nunit-console \
   npm yarn \
+  python-pip python-setuptools \
   golang-${V_GOLANG} \
   docker-ce
 
 RUN wget -q www.scala-lang.org/files/archive/scala-${V_SCALA}.deb && dpkg -i scala-${V_SCALA}.deb && rm -rf *.deb && \
   npm i -g typescript@${V_TYPESCRIPT} && \
-  wget -q -O /usr/local/bin/coursier https://git.io/vgvpD && chmod +x /usr/local/bin/coursier
+  wget -q -O /usr/local/bin/coursier https://git.io/vgvpD && chmod +x /usr/local/bin/coursier && \
+  pip install awscli
 
 RUN apt-get install -y --no-install-recommends sbt && \
   apt-get install --no-install-recommends -y ruby ruby-dev && \
