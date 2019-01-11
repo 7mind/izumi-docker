@@ -4,6 +4,7 @@ FROM ubuntu:${V_UBUNTU}
 ARG V_SCALA=2.12.8
 ARG V_TYPESCRIPT=3.2.2
 ARG V_GOLANG=1.10
+ARG V_DOTNETSDK=2.2
 ARG V_OPENJDK=11
 ARG URELEASE=bionic
 
@@ -22,19 +23,22 @@ RUN echo "APT::Acquire::Queue-Mode "access"; APT::Acquire::Retries 3; " > /etc/a
   dpkg-reconfigure --frontend noninteractive tzdata && \
   apt-get clean -y
 
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
+RUN curl -o packages-microsoft-prod.deb https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb && \
+  dpkg -i packages-microsoft-prod.deb && \
+  rm packages-microsoft-prod.deb
+
+RUN curl -sS https://download.mono-project.com/repo/xamarin.gpg | apt-key add - && \
   echo "deb https://download.mono-project.com/repo/ubuntu stable-${URELEASE} main" | tee /etc/apt/sources.list.d/mono-official-stable.list && \
   apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823 && \
   echo "deb https://dl.bintray.com/sbt/debian /" | tee /etc/apt/sources.list.d/sbt.list && \
   curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
   echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
-  echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
   echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu ${URELEASE} stable" | tee /etc/apt/sources.list.d/docker.list && \
   apt-get update
 
 RUN apt-get install -y --no-install-recommends openjdk-${V_OPENJDK}-jdk \
-  mono-devel nuget nunit-console \
+  mono-devel nuget nunit-console dotnet-sdk-${V_DOTNETSDK} \
   npm yarn \
   python-pip python-setuptools \
   golang-${V_GOLANG} \
@@ -62,6 +66,7 @@ RUN echo "java: $(java -version)" && \
   echo "csc: $(csc -version)" && \
   echo "tsc: $(tsc -version)" && \
   echo "go: $(go version)" && \
+  echo "dotnet: $(dotnet --version)" && \
   echo "npm: $(npm -v)" && \
   echo "yarn: $(yarn -v)" && \
   echo "jekyll: $(jekyll -v)" && \
