@@ -38,7 +38,7 @@ RUN curl -sS https://download.mono-project.com/repo/xamarin.gpg | apt-key add - 
   apt-get update
 
 RUN apt-get install -y --no-install-recommends openjdk-${V_OPENJDK}-jdk \
-  mono-devel nuget nunit-console dotnet-sdk-${V_DOTNETSDK} \
+  mono-devel nuget nunit-console dotnet-sdk-${V_DOTNETSDK} msbuild \
   npm yarn \
   python-pip python-setuptools \
   golang-${V_GOLANG} \
