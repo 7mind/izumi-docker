@@ -3,7 +3,7 @@ FROM ubuntu:${V_UBUNTU}
 
 ARG V_SCALA=2.12.8
 ARG V_TYPESCRIPT=3.2.2
-ARG V_GOLANG=1.10
+ARG V_GOLANG=1.11
 ARG V_DOTNETSDK=2.2
 ARG V_OPENJDK=11
 ARG URELEASE=bionic
@@ -18,7 +18,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN echo "APT::Acquire::Queue-Mode "access"; APT::Acquire::Retries 3; " > /etc/apt/apt.conf.d/99parallel && \
   export DEBIAN_FRONTEND=noninteractive && \
-  apt-get update && apt-get install -y --no-install-recommends tzdata gnupg ca-certificates wget curl unzip apt-utils build-essential git openssh-client && \
+  apt-get update && apt-get install -y --no-install-recommends tzdata gnupg ca-certificates wget curl unzip apt-utils build-essential git openssh-client software-properties-common && \
   ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
   dpkg-reconfigure --frontend noninteractive tzdata && \
   apt-get clean -y
@@ -26,6 +26,8 @@ RUN echo "APT::Acquire::Queue-Mode "access"; APT::Acquire::Retries 3; " > /etc/a
 RUN curl -o packages-microsoft-prod.deb https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb && \
   dpkg -i packages-microsoft-prod.deb && \
   rm packages-microsoft-prod.deb
+
+RUN add-apt-repository ppa:longsleep/golang-backports
 
 RUN curl -sS https://download.mono-project.com/repo/xamarin.gpg | apt-key add - && \
   echo "deb https://download.mono-project.com/repo/ubuntu stable-${URELEASE} main" | tee /etc/apt/sources.list.d/mono-official-stable.list && \
