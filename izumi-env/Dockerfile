@@ -1,7 +1,7 @@
 ARG V_UBUNTU=18.04
 FROM ubuntu:${V_UBUNTU}
 
-ARG V_SCALA=2.12.8
+ARG V_SCALA=2.12.9
 ARG V_TYPESCRIPT=3.2.2
 ARG V_GOLANG=1.11
 ARG V_DOTNETSDK=2.2
@@ -51,7 +51,7 @@ RUN wget -q www.scala-lang.org/files/archive/scala-${V_SCALA}.deb && dpkg -i sca
   wget -q -O /usr/local/bin/coursier https://git.io/vgvpD && chmod +x /usr/local/bin/coursier && \
   pip install awscli
 
-RUN apt-get install -y --no-install-recommends sbt && \
+RUN apt-get install -y --no-install-recommends sbt ant && \
   apt-get install --no-install-recommends -y ruby ruby-dev && \
   apt-get clean -y
 
