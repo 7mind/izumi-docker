@@ -30,6 +30,7 @@ RUN curl -o packages-microsoft-prod.deb https://packages.microsoft.com/config/ub
 RUN add-apt-repository ppa:longsleep/golang-backports
 
 RUN curl -sS https://download.mono-project.com/repo/xamarin.gpg | apt-key add - && \
+  curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
   echo "deb https://download.mono-project.com/repo/ubuntu stable-${URELEASE} main" | tee /etc/apt/sources.list.d/mono-official-stable.list && \
   apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823 && \
   echo "deb https://dl.bintray.com/sbt/debian /" | tee /etc/apt/sources.list.d/sbt.list && \
@@ -41,7 +42,7 @@ RUN curl -sS https://download.mono-project.com/repo/xamarin.gpg | apt-key add - 
 
 RUN apt-get install -y --no-install-recommends openjdk-${V_OPENJDK}-jdk \
   mono-devel nuget nunit-console dotnet-sdk-${V_DOTNETSDK} msbuild \
-  npm yarn \
+  nodejs yarn \
   python-pip python-setuptools \
   golang-${V_GOLANG} \
   docker-ce
@@ -70,6 +71,7 @@ RUN echo "java: $(java -version)" && \
   echo "go: $(go version)" && \
   echo "dotnet: $(dotnet --version)" && \
   echo "npm: $(npm -v)" && \
+  echo "node: $(node -v)" && \
   echo "yarn: $(yarn -v)" && \
   echo "jekyll: $(jekyll -v)" && \
   sbt about
