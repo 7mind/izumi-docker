@@ -17,7 +17,8 @@ jobs:
         echo ${{ env.GITHUB_REF_SLUG }}
         echo ${{ env.GITHUB_HEAD_REF_SLUG }}
         echo ${{ env.GITHUB_BASE_REF_SLUG }}
-
+    - name: Set env
+      run: echo ::set-env name=BRANCH_TAG::$(git describe --contains | grep v | grep -v '~' | head -n 1 || true)        
     - name: Build the Docker image
       run: |
         env
@@ -28,4 +29,4 @@ jobs:
         docker push septimalmind/izumi-env:latest
         docker push septimalmind/izumi-env:${GITHUB_REF_SLUG}
         docker push septimalmind/izumi-env:${GITHUB_SHA}
-        #if [[ ! -z "$TRAVIS_TAG" ]] ; then docker push septimalmind/izumi-env:${TRAVIS_TAG} ; fi
+        if [[ ! -z "$BRANCH_TAG" ]] ; then docker push septimalmind/izumi-env:${BRANCH_TAGYt} ; fi
