@@ -5,8 +5,10 @@ on: [push]
 jobs:
 
   build:
-
     runs-on: ubuntu-latest
+    env: 
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     steps:
     - uses: actions/checkout@v2
     - uses: rlespinasse/github-slug-action@master
@@ -22,8 +24,8 @@ jobs:
         echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
         sudo service docker restart        
         docker build --squash --tag septimalmind/izumi-env:latest --tag septimalmind/izumi-env:${GITHUB_REF_SLUG} --tag septimalmind/izumi-env:${GITHUB_SHA} izumi-env
-        #echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin        
-        #docker push septimalmind/izumi-env:latest
-        #docker push septimalmind/izumi-env:${TRAVIS_BRANCH}
-        #docker push septimalmind/izumi-env:${TRAVIS_COMMIT}
+        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin        
+        docker push septimalmind/izumi-env:latest
+        docker push septimalmind/izumi-env:${GITHUB_REF_SLUG}
+        docker push septimalmind/izumi-env:${GITHUB_SHA}
         #if [[ ! -z "$TRAVIS_TAG" ]] ; then docker push septimalmind/izumi-env:${TRAVIS_TAG} ; fi
