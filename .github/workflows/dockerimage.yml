@@ -1,0 +1,20 @@
+name: Docker Image CI
+
+on: [push]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker image
+      run: |
+        env
+        docker build --squash --tag septimalmind/izumi-env:latest --tag septimalmind/izumi-env:${TRAVIS_BRANCH} --tag septimalmind/izumi-env:${TRAVIS_COMMIT} izumi-env
+        docker push septimalmind/izumi-env:latest
+        docker push septimalmind/izumi-env:${TRAVIS_BRANCH}
+        docker push septimalmind/izumi-env:${TRAVIS_COMMIT}
+        if [[ ! -z "$TRAVIS_TAG" ]] ; then docker push septimalmind/izumi-env:${TRAVIS_TAG} ; fi
