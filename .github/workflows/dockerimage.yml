@@ -7,17 +7,23 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
+    - uses: rlespinasse/github-slug-action@master
+    - name: Print slug variables
+      run: |
+        echo ${{ env.GITHUB_REF_SLUG }}
+        echo ${{ env.GITHUB_HEAD_REF_SLUG }}
+        echo ${{ env.GITHUB_BASE_REF_SLUG }}
+
     - name: Build the Docker image
       run: |
         env
         echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
         sudo service docker restart        
-        docker build --squash --tag septimalmind/izumi-env:latest --tag septimalmind/izumi-env:${TRAVIS_BRANCH} --tag septimalmind/izumi-env:${TRAVIS_COMMIT} izumi-env
-        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin        
-        docker push septimalmind/izumi-env:latest
-        docker push septimalmind/izumi-env:${TRAVIS_BRANCH}
-        docker push septimalmind/izumi-env:${TRAVIS_COMMIT}
-        if [[ ! -z "$TRAVIS_TAG" ]] ; then docker push septimalmind/izumi-env:${TRAVIS_TAG} ; fi
+        docker build --squash --tag septimalmind/izumi-env:latest --tag septimalmind/izumi-env:${GITHUB_REF_SLUG} --tag septimalmind/izumi-env:${GITHUB_SHA} izumi-env
+        #echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin        
+        #docker push septimalmind/izumi-env:latest
+        #docker push septimalmind/izumi-env:${TRAVIS_BRANCH}
+        #docker push septimalmind/izumi-env:${TRAVIS_COMMIT}
+        #if [[ ! -z "$TRAVIS_TAG" ]] ; then docker push septimalmind/izumi-env:${TRAVIS_TAG} ; fi
