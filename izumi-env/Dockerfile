@@ -7,6 +7,7 @@ ARG V_GOLANG=1.11
 ARG V_DOTNETSDK=2.2
 ARG V_OPENJDK=11
 ARG V_SBT=1.3.3
+ARG V_TF=0.12.24
 ARG URELEASE=bionic
 
 RUN mkdir -p /work
@@ -19,7 +20,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN echo "APT::Acquire::Queue-Mode "access"; APT::Acquire::Retries 3; " > /etc/apt/apt.conf.d/99parallel && \
   export DEBIAN_FRONTEND=noninteractive && \
-  apt-get update && apt-get install -y --no-install-recommends tzdata gnupg ca-certificates wget curl unzip apt-utils build-essential git openssh-client software-properties-common && \
+  apt-get update && apt-get install -y --no-install-recommends tzdata gnupg ca-certificates wget curl zip unzip apt-utils build-essential git openssh-client software-properties-common && \
   ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
   dpkg-reconfigure --frontend noninteractive tzdata && \
   apt-get clean -y
@@ -60,6 +61,12 @@ RUN apt-get install -y --no-install-recommends sbt=${V_SBT} ant && \
 RUN gem update --system && \
   gem install sass && \
   gem install jekyll -v 3.2.1
+
+RUN curl -o tf.zip https://releases.hashicorp.com/terraform/${V_TF}/terraform_${V_TF}_linux_amd64.zip && \
+  unzip tf.zip && \
+  mv terraform /usr/local/bin/ && \
+  dpkg -i packages-microsoft-prod.deb && \
+  rm -f tf.zip
 
 #  /usr/lib/go-1.10/bin needs to be added into PATH manually: https://github.com/golang/go/wiki/Ubuntu
 ENV GOPATH $HOME/gopath
