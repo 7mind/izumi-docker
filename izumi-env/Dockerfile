@@ -65,7 +65,6 @@ RUN gem update --system && \
 RUN curl -o tf.zip https://releases.hashicorp.com/terraform/${V_TF}/terraform_${V_TF}_linux_amd64.zip && \
   unzip tf.zip && \
   mv terraform /usr/local/bin/ && \
-  dpkg -i packages-microsoft-prod.deb && \
   rm -f tf.zip
 
 #  /usr/lib/go-1.10/bin needs to be added into PATH manually: https://github.com/golang/go/wiki/Ubuntu
