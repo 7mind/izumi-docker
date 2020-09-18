@@ -87,7 +87,7 @@ RUN cd /tmp && \
   update-alternatives --install /usr/bin/java java $JAVA_HOME/bin/java 1 && \
   gu install native-image
 
-RUN wget -q www.scala-lang.org/files/archive/scala-${V_SCALA}.deb && dpkg -i scala-${V_SCALA}.deb --ignore-depends=java8-runtime-headless && rm -rf *.deb && \
+RUN wget -q www.scala-lang.org/files/archive/scala-${V_SCALA}.deb && dpkg -i --ignore-depends=java8-runtime-headless scala-${V_SCALA}.deb  && rm -rf *.deb && \
   curl -Lo /usr/local/bin/coursier https://git.io/coursier-cli && chmod +x /usr/local/bin/coursier
 
 RUN npm i -g typescript@${V_TYPESCRIPT}
