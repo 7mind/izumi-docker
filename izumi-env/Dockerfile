@@ -64,7 +64,7 @@ RUN apt-get install -y --no-install-recommends \
   zsh nano
 
 RUN apt-get install -y --no-install-recommends \
-  sbt=${V_SBT}
+  sbt=${V_SBT} zlib1g-dev
 #ant
 #openjdk-${V_OPENJDK}-jdk
 
