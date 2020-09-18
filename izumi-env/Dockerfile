@@ -51,7 +51,8 @@ RUN apt-get install -y --no-install-recommends openjdk-${V_OPENJDK}-jdk \
   python-pip python-setuptools \
   golang-${V_GOLANG} \
   docker-ce \
-  terraform
+  terraform \
+  zsh nano
 
 RUN wget -q www.scala-lang.org/files/archive/scala-${V_SCALA}.deb && dpkg -i scala-${V_SCALA}.deb && rm -rf *.deb && \
   npm i -g typescript@${V_TYPESCRIPT} && \
