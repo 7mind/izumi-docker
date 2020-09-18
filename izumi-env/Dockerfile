@@ -25,7 +25,7 @@ RUN echo "APT::Acquire::Queue-Mode "access"; APT::Acquire::Retries 3; " > /etc/a
   dpkg-reconfigure --frontend noninteractive tzdata && \
   apt-get clean -y
 
-RUN curl -o packages-microsoft-prod.deb https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb && \
+RUN curl -o packages-microsoft-prod.deb https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb && \
   dpkg -i packages-microsoft-prod.deb && \
   rm packages-microsoft-prod.deb
 
@@ -87,7 +87,7 @@ RUN cd /tmp && \
   update-alternatives --install /usr/bin/java java $JAVA_HOME/bin/java 1 && \
   gu install native-image
 
-RUN wget -q www.scala-lang.org/files/archive/scala-${V_SCALA}.deb && dpkg -i scala-${V_SCALA}.deb && rm -rf *.deb && \
+RUN wget -q www.scala-lang.org/files/archive/scala-${V_SCALA}.deb && dpkg -i scala-${V_SCALA}.deb --ignore-depends=java8-runtime-headless && rm -rf *.deb && \
   curl -Lo /usr/local/bin/coursier https://git.io/coursier-cli && chmod +x /usr/local/bin/coursier
 
 RUN npm i -g typescript@${V_TYPESCRIPT}
@@ -103,7 +103,7 @@ ENV GOPATH $HOME/gopath
 ENV PATH $HOME/gopath/bin:/usr/lib/go-${V_GOLANG}/bin:$PATH
 
 RUN echo "java: $(java -version)" && \
-  echo "java: $(native-image -version)" && \
+  echo "java: $(native-image --version)" && \
   echo "scalac: $(scalac -version)" && \
   echo "csc: $(csc -version)" && \
   echo "tsc: $(tsc -version)" && \
