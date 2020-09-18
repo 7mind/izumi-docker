@@ -5,8 +5,9 @@ ARG V_SCALA=2.13.3
 ARG V_TYPESCRIPT=4.0.2
 ARG V_GOLANG=1.11
 ARG V_DOTNETSDK=3.1
-ARG V_OPENJDK=11
+#ARG V_OPENJDK=11
 ARG V_SBT=1.3.13
+ARG V_GRAAL=20.2.0
 ARG URELEASE=bionic
 
 RUN mkdir -p /work
@@ -31,37 +32,67 @@ RUN curl -o packages-microsoft-prod.deb https://packages.microsoft.com/config/ub
 RUN add-apt-repository ppa:longsleep/golang-backports
 
 RUN curl -sS https://download.mono-project.com/repo/xamarin.gpg | apt-key add - && \
-  curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
   echo "deb https://download.mono-project.com/repo/ubuntu stable-${URELEASE} main" | tee /etc/apt/sources.list.d/mono-official-stable.list && \
-  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823 && \
-  echo "deb https://dl.bintray.com/sbt/debian /" | tee /etc/apt/sources.list.d/sbt.list && \
   curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
   echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
   echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu ${URELEASE} stable" | tee /etc/apt/sources.list.d/docker.list && \
   curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add - && \
   echo "deb [arch=amd64] https://apt.releases.hashicorp.com ${URELEASE} main"| tee /etc/apt/sources.list.d/terraform.list   && \
+  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823 && \
+  echo "deb https://dl.bintray.com/sbt/debian /" | tee /etc/apt/sources.list.d/sbt.list && \
+  curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
   apt-get update
 
 RUN apt-get upgrade -y
 
-RUN apt-get install -y --no-install-recommends openjdk-${V_OPENJDK}-jdk \
-  mono-devel nuget nunit-console dotnet-sdk-${V_DOTNETSDK} msbuild \
-  nodejs yarn \
-  python-pip python-setuptools \
-  golang-${V_GOLANG} \
+RUN apt-get install -y --no-install-recommends \
+  mono-devel nuget nunit-console dotnet-sdk-${V_DOTNETSDK} msbuild
+
+RUN apt-get install -y --no-install-recommends \
+  nodejs yarn
+
+RUN apt-get install -y --no-install-recommends \
+  python-pip python-setuptools
+
+RUN apt-get install -y --no-install-recommends \
+  golang-${V_GOLANG}
+
+RUN apt-get install -y --no-install-recommends \
   docker-ce \
   terraform \
   zsh nano
 
-RUN wget -q www.scala-lang.org/files/archive/scala-${V_SCALA}.deb && dpkg -i scala-${V_SCALA}.deb && rm -rf *.deb && \
-  npm i -g typescript@${V_TYPESCRIPT} && \
-  curl -Lo /usr/local/bin/coursier https://git.io/coursier-cli && chmod +x /usr/local/bin/coursier && \
-  pip install awscli
+RUN apt-get install -y --no-install-recommends \
+  sbt=${V_SBT}
+#ant
+#openjdk-${V_OPENJDK}-jdk
 
-RUN apt-get install -y --no-install-recommends sbt=${V_SBT} ant && \
-  apt-get install --no-install-recommends -y ruby ruby-dev && \
-  apt-get clean -y
+RUN apt-get install -y --no-install-recommends \
+  ruby ruby-dev
+
+RUN apt-get clean -y
+
+ARG JAVA_BASE=/usr/lib/jvm
+ENV JAVA_HOME ${JAVA_BASE}/graalvm
+ENV PATH "$JAVA_HOME/bin:$PATH"
+
+RUN cd /tmp && \
+  wget -q https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${V_GRAAL}/graalvm-ce-java11-linux-amd64-${V_GRAAL}.tar.gz -O dist.tar.gz && \
+  tar -xvzf dist.tar.gz && \
+  rm -f dist.tar.gz && \
+  mkdir -p ${JAVA_BASE} && \
+  chmod -R 755 ${JAVA_BASE} && \
+  mv graalvm-*/ ${JAVA_HOME} && \
+  update-alternatives --install /usr/bin/java java $JAVA_HOME/bin/java 1 && \
+  gu install native-image
+
+RUN wget -q www.scala-lang.org/files/archive/scala-${V_SCALA}.deb && dpkg -i scala-${V_SCALA}.deb && rm -rf *.deb && \
+  curl -Lo /usr/local/bin/coursier https://git.io/coursier-cli && chmod +x /usr/local/bin/coursier
+
+RUN npm i -g typescript@${V_TYPESCRIPT}
+
+RUN pip install awscli
 
 RUN gem update --system && \
   gem install sass && \
@@ -72,6 +103,7 @@ ENV GOPATH $HOME/gopath
 ENV PATH $HOME/gopath/bin:/usr/lib/go-${V_GOLANG}/bin:$PATH
 
 RUN echo "java: $(java -version)" && \
+  echo "java: $(native-image -version)" && \
   echo "scalac: $(scalac -version)" && \
   echo "csc: $(csc -version)" && \
   echo "tsc: $(tsc -version)" && \
