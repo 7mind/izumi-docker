@@ -1,13 +1,12 @@
 ARG V_UBUNTU=18.04
 FROM ubuntu:${V_UBUNTU}
 
-ARG V_SCALA=2.13.1
-ARG V_TYPESCRIPT=3.9.3
+ARG V_SCALA=2.13.3
+ARG V_TYPESCRIPT=4.0.2
 ARG V_GOLANG=1.11
-ARG V_DOTNETSDK=2.2
+ARG V_DOTNETSDK=3.1
 ARG V_OPENJDK=11
-ARG V_SBT=1.3.10
-ARG V_TF=0.12.26
+ARG V_SBT=1.3.13
 ARG URELEASE=bionic
 
 RUN mkdir -p /work
@@ -40,14 +39,19 @@ RUN curl -sS https://download.mono-project.com/repo/xamarin.gpg | apt-key add - 
   echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
   echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu ${URELEASE} stable" | tee /etc/apt/sources.list.d/docker.list && \
+  curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add - && \
+  echo "deb [arch=amd64] https://apt.releases.hashicorp.com ${URELEASE} main"| tee /etc/apt/sources.list.d/terraform.list   && \
   apt-get update
+
+RUN apt-get upgrade -y
 
 RUN apt-get install -y --no-install-recommends openjdk-${V_OPENJDK}-jdk \
   mono-devel nuget nunit-console dotnet-sdk-${V_DOTNETSDK} msbuild \
   nodejs yarn \
   python-pip python-setuptools \
   golang-${V_GOLANG} \
-  docker-ce
+  docker-ce \
+  terraform
 
 RUN wget -q www.scala-lang.org/files/archive/scala-${V_SCALA}.deb && dpkg -i scala-${V_SCALA}.deb && rm -rf *.deb && \
   npm i -g typescript@${V_TYPESCRIPT} && \
@@ -61,11 +65,6 @@ RUN apt-get install -y --no-install-recommends sbt=${V_SBT} ant && \
 RUN gem update --system && \
   gem install sass && \
   gem install jekyll -v 3.2.1
-
-RUN curl -o tf.zip https://releases.hashicorp.com/terraform/${V_TF}/terraform_${V_TF}_linux_amd64.zip && \
-  unzip tf.zip && \
-  mv terraform /usr/local/bin/ && \
-  rm -f tf.zip
 
 #  /usr/lib/go-1.10/bin needs to be added into PATH manually: https://github.com/golang/go/wiki/Ubuntu
 ENV GOPATH $HOME/gopath
