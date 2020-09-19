@@ -61,7 +61,7 @@ RUN apt-get install -y --no-install-recommends \
 RUN apt-get install -y --no-install-recommends \
   docker-ce \
   terraform \
-  zsh nano
+  zsh nano upx
 
 RUN apt-get install -y --no-install-recommends \
   sbt=${V_SBT} zlib1g-dev
