@@ -75,7 +75,7 @@ RUN apt-get clean -y
 
 ARG JAVA_BASE=/usr/lib/jvm
 ENV JAVA_HOME ${JAVA_BASE}/graalvm
-ENV PATH "$JAVA_HOME/bin:$PATH"
+ENV PATH "$PATH:$JAVA_HOME/bin"
 
 RUN cd /tmp && \
   wget -q https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${V_GRAAL}/graalvm-ce-java11-linux-amd64-${V_GRAAL}.tar.gz -O dist.tar.gz && \
