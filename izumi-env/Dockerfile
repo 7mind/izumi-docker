@@ -8,6 +8,7 @@ ARG V_DOTNETSDK=3.1
 #ARG V_OPENJDK=11
 ARG V_SBT=1.3.13
 ARG V_GRAAL=20.2.0
+ARG V_PROTOBUF=3.17.3
 ARG URELEASE=bionic
 
 RUN mkdir -p /work
@@ -117,3 +118,9 @@ RUN echo "java: $(java -version)" && \
   echo "yarn: $(yarn -v)" && \
   echo "jekyll: $(jekyll -v)" && \
   sbt about
+
+  ENV PB_REL="https://github.com/protocolbuffers/protobuf/releases"
+  RUN curl -LO $PB_REL/download/v${V_PROTOBUF}/protoc-${V_PROTOBUF}-linux-x86_64.zip
+  RUN unzip protoc-${V_PROTOBUF}-linux-x86_64.zip -d /usr/proto 
+  RUN mv /usr/proto/bin/protoc /usr/bin/protoc 
+  RUN mv /usr/proto/include /usr/bin/include
