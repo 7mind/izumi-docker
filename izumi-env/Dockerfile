@@ -120,7 +120,6 @@ RUN echo "java: $(java -version)" && \
   sbt about
 
 ENV PB_REL="https://github.com/protocolbuffers/protobuf/releases"
-RUN curl -LO $PB_REL/download/v${V_PROTOBUF}/protoc-${V_PROTOBUF}-linux-x86_64.zip
-RUN unzip protoc-${V_PROTOBUF}-linux-x86_64.zip -d /usr/proto
+RUN curl -LO $PB_REL/download/v${V_PROTOBUF}/protoc-${V_PROTOBUF}-linux-x86_64.zip && unzip protoc-${V_PROTOBUF}-linux-x86_64.zip -d /usr/proto
 RUN mv /usr/proto/bin/protoc /usr/bin/protoc
 RUN mv /usr/proto/include /usr/bin/include
