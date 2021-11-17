@@ -94,6 +94,8 @@ RUN cd /tmp && \
 RUN wget -q www.scala-lang.org/files/archive/scala-${V_SCALA}.deb && dpkg -i --ignore-depends=java8-runtime-headless scala-${V_SCALA}.deb  && rm -rf *.deb && \
   curl -Lo /usr/local/bin/coursier https://git.io/coursier-cli && chmod +x /usr/local/bin/coursier
 
+RUN curl -Lo /usr/local/bin/cs https://git.io/coursier-cli-linux && sudo chmod +x /usr/local/bin/cs
+
 RUN npm i -g typescript@${V_TYPESCRIPT}
 
 RUN pip install awscli
