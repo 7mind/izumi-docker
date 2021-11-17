@@ -54,7 +54,7 @@ RUN apt-get install -y --no-install-recommends \
   mono-devel nuget nunit-console dotnet-sdk-${V_DOTNETSDK} msbuild
 
 RUN apt-get install -y --no-install-recommends \
-  nodejs yarn npm
+  nodejs yarn
 
 RUN apt-get install -y --no-install-recommends \
   python-pip python-setuptools
