@@ -41,7 +41,6 @@ RUN curl -sS https://download.mono-project.com/repo/xamarin.gpg | apt-key add - 
   curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add - && \
   echo "deb [arch=amd64] https://apt.releases.hashicorp.com ${URELEASE} main"| tee /etc/apt/sources.list.d/terraform.list   && \
   apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823 && \
-  # echo "deb https://dl.bintray.com/sbt/debian /" | tee /etc/apt/sources.list.d/sbt.list && \
   curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
   echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" | tee /etc/apt/sources.list.d/sbt.list && \
   echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | tee /etc/apt/sources.list.d/sbt_old.list && \
@@ -49,6 +48,9 @@ RUN curl -sS https://download.mono-project.com/repo/xamarin.gpg | apt-key add - 
   apt-get update
 
 RUN apt-get upgrade -y
+
+# we don't need it but it fixes broken apt
+RUN apt-get install -y openjdk-17-jre-headless
 
 RUN apt-get install -y --no-install-recommends \
   mono-devel nuget nunit-console dotnet-sdk-${V_DOTNETSDK} msbuild
@@ -88,7 +90,7 @@ RUN cd /tmp && \
   mkdir -p ${JAVA_BASE} && \
   chmod -R 755 ${JAVA_BASE} && \
   mv graalvm-*/ ${JAVA_HOME} && \
-  update-alternatives --install /usr/bin/java java $JAVA_HOME/bin/java 1 && \
+  update-alternatives --install /usr/bin/java java $JAVA_HOME/bin/java 99999 && \
   gu install native-image
 
 RUN wget -q www.scala-lang.org/files/archive/scala-${V_SCALA}.deb && dpkg -i --ignore-depends=java8-runtime-headless scala-${V_SCALA}.deb  && rm -rf *.deb && \
