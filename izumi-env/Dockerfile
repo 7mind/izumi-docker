@@ -7,6 +7,7 @@ ARG V_GOLANG=1.11
 ARG V_DOTNETSDK=3.1
 #ARG V_OPENJDK=11
 ARG V_SBT=1.3.13
+ARG V_MVN=3.6.0-1~18.04.1
 ARG V_GRAAL=21.3.0
 ARG V_PROTOBUF=3.19.1
 ARG URELEASE=bionic
@@ -78,6 +79,10 @@ RUN apt-get install -y --no-install-recommends \
 
 RUN apt-get install -y --no-install-recommends \
   sbt=${V_SBT} zlib1g-dev
+
+RUN apt-get install -y --no-install-recommends \
+  maven=${V_MVN}
+
 #ant
 #openjdk-${V_OPENJDK}-jdk
 
