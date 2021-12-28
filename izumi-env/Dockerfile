@@ -32,6 +32,13 @@ RUN curl -o packages-microsoft-prod.deb https://packages.microsoft.com/config/ub
 
 RUN add-apt-repository ppa:longsleep/golang-backports
 
+RUN apt-get -y install locales
+RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
+  locale-gen
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
 RUN curl -sS https://download.mono-project.com/repo/xamarin.gpg | apt-key add - && \
   echo "deb https://download.mono-project.com/repo/ubuntu stable-${URELEASE} main" | tee /etc/apt/sources.list.d/mono-official-stable.list && \
   curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
