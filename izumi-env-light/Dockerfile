@@ -15,6 +15,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV JAVA_HOME ${JAVA_BASE}/graalvm
 ENV PATH "$PATH:$JAVA_HOME/bin:/app:/root/.dotnet/tools"
 
+RUN apt-get update
 RUN apt-get -y install locales
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
   locale-gen
