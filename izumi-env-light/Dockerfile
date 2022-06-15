@@ -13,7 +13,7 @@ WORKDIR /work
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV JAVA_HOME ${JAVA_BASE}/graalvm
-ENV PATH "$PATH:$JAVA_HOME/bin:/app:/root/.dotnet/tools"
+ENV PATH "$PATH:$JAVA_HOME/bin:/app:/.dotnet/tools"
 
 RUN apt-get update
 RUN apt-get -y install locales
@@ -37,7 +37,7 @@ RUN curl -o packages-microsoft-prod.deb https://packages.microsoft.com/config/ub
 RUN apt-get update && apt-get install -y apt-transport-https dotnet-sdk-3.1 aspnetcore-runtime-3.1 && apt-get upgrade -y && apt-get clean -y
 
 RUN dotnet --version && \
-  dotnet tool install -g Amazon.Lambda.Tools && \
+  dotnet tool install Amazon.Lambda.Tools --tool-path /.dotnet/tools && \
   dotnet new -i Amazon.Lambda.Templates
 
 ARG JAVA_BASE=/usr/lib/jvm
