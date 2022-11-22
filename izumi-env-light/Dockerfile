@@ -42,7 +42,9 @@ RUN cd /tmp && \
   mkdir -p ${JAVA_BASE} && \
   chmod -R 755 ${JAVA_BASE} && \
   mv graalvm-*/ ${JAVA_HOME} && \
-  update-alternatives --install /usr/bin/java java $JAVA_HOME/bin/java 1
+  update-alternatives --install /usr/bin/java java $JAVA_HOME/bin/java 1 && \
+  gu install nodejs && \
+  gu install js
 
 # dotnet
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
