@@ -1,0 +1,22 @@
+# syntax = edrevo/dockerfile-plus
+
+ARG V_UBUNTU=22.04
+FROM ubuntu:${V_UBUNTU}
+ARG URELEASE=jammy
+
+INCLUDE+ lib/Dockerfile.common
+
+INCLUDE+ lib/Dockerfile.common-java
+
+INCLUDE+ lib/Dockerfile.common-dotnet
+
+# dotnet
+ENV PATH "$PATH:/.dotnet/tools"
+RUN dotnet --version && \
+  dotnet tool install Amazon.Lambda.Tools --tool-path /.dotnet/tools && \
+  dotnet new -i Amazon.Lambda.Templates
+# end: dotnet
+
+ENV PATH "$PATH:/app"
+
+RUN apt-get clean -y

@@ -1,0 +1,52 @@
+### Both envs
+ARG V_GRAAL=21.0.2
+ARG V_DOTNETSDK=7.0
+###
+
+### Build env only
+ARG V_SCALA=2.13.12
+ARG V_SBT=1.9.8
+
+ARG V_TYPESCRIPT=4.0.2
+ARG V_GOLANG=1.21
+ARG V_MVN=3.6.3-5
+ARG V_PROTOBUF=25.1
+ARG V_JEKYLL=3.2.1
+###
+
+# basic configuration
+RUN mkdir -p /work
+RUN mkdir -p /root
+VOLUME /work
+VOLUME /root
+WORKDIR /work
+
+ENV DEBIAN_FRONTEND noninteractive
+RUN echo "APT::Acquire::Queue-Mode "access"; APT::Acquire::Retries 3; " > /etc/apt/apt.conf.d/99parallel
+
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install -y --no-install-recommends \
+    tzdata \
+    gnupg \
+    ca-certificates \
+    wget \
+    curl \
+    zip \
+    unzip \
+    apt-utils \
+    jq \
+    openssh-client \
+    software-properties-common \
+    apt-transport-https
+
+RUN apt-get -y --no-install-recommends install locales
+RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
+    locale-gen
+
+RUN ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
+    dpkg-reconfigure --frontend noninteractive tzdata
+# end: basic configuration
