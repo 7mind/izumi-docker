@@ -1,9 +1,5 @@
 # syntax = edrevo/dockerfile-plus
 
-ARG V_UBUNTU=22.04
-FROM ubuntu:${V_UBUNTU}
-ARG URELEASE=jammy
-
 INCLUDE+ lib/Dockerfile.common
 
 INCLUDE+ lib/Dockerfile.common-java

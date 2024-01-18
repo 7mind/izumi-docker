@@ -1,8 +1,6 @@
 # syntax = edrevo/dockerfile-plus
 
-ARG V_UBUNTU=22.04
-FROM ubuntu:${V_UBUNTU}
-ARG URELEASE=jammy
+
 
 INCLUDE+ lib/Dockerfile.common
 
@@ -46,8 +44,8 @@ RUN apt-get install -y --no-install-recommends \
 RUN apt-get install -y --no-install-recommends \
   nodejs yarn
 
-RUN apt-get install -y --no-install-recommends \
-  python-pip python-setuptools
+# RUN apt-get install -y --no-install-recommends \
+#   python-pip python-setuptools
 
 RUN apt-get install -y --no-install-recommends \
   golang-${V_GOLANG}
@@ -73,7 +71,7 @@ RUN curl -Lo /usr/local/bin/cs https://git.io/coursier-cli-linux && chmod +x /us
 
 RUN npm i -g typescript@${V_TYPESCRIPT}
 
-RUN apt-get install -y --no-install-recommends python3-pip && \
+RUN apt-get install -y --no-install-recommends python3-setuptools python3-pip && \
   pip3 install awscli
 
 RUN gem install sass && \
